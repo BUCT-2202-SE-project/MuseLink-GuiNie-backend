@@ -127,3 +127,24 @@ CREATE TABLE backup (
     file_path VARCHAR(255) NOT NULL COMMENT '备份文件路径',
     operator_id INT NOT NULL COMMENT '操作员ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='备份记录表';
+
+
+-- 新增问答表和主题表
+-- 问答记录表
+CREATE TABLE QA (
+    qa_id INT PRIMARY KEY AUTO_INCREMENT,
+    history_id INT NOT NULL,
+    content TEXT NOT NULL,
+    ask_time DATETIME NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+-- 主题记录表
+CREATE TABLE Topic (
+    user_id INT NOT NULL,
+    history_id INT NOT NULL,
+    topic VARCHAR(255),
+    PRIMARY KEY (user_id, history_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
