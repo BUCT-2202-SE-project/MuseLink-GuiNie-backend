@@ -39,7 +39,7 @@ CREATE TABLE artifact (
     description TEXT COMMENT '详细介绍',
     image_url VARCHAR(255) COMMENT '图片存储路径',
     likes INT DEFAULT 0 COMMENT '点赞数'，
-    vector_id BIGINT COMMENT 'Milvus 中的向量 ID（用于关联特征向量）'
+    feature TEXT NOT NULL COMMENT '特征向量（字符串存储）'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文物表';
 
 -- 点赞表（记录当前用户是否点赞当前显示文物）
