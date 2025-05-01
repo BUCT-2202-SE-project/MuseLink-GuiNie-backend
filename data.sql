@@ -1,35 +1,12 @@
--- 海外文物知识用户表（专用于该角色用户）
-CREATE TABLE overseas_user (
+-- 知识问答，海外文物知识，掌上客户端三个子系统的用户表
+CREATE TABLE user (
     user_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID(主键)',
     username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
     password VARCHAR(255) NOT NULL COMMENT '密码（需加密存储）',
     email VARCHAR(100) NOT NULL UNIQUE COMMENT '邮箱',
     register_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-    role ENUM('海外文物知识用户') NOT NULL DEFAULT '海外文物知识用户' COMMENT '用户角色（固定）',
     permission_status ENUM('正常', '受限') NOT NULL DEFAULT '正常' COMMENT '权限状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='海外文物知识用户表';
-
--- 知识问答子系统用户表（专用于该角色用户）
-CREATE TABLE qa_user (
-    user_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID(主键)',
-    username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
-    password VARCHAR(255) NOT NULL COMMENT '密码（需加密存储）',
-    email VARCHAR(100) NOT NULL UNIQUE COMMENT '邮箱',
-    register_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-    role ENUM('知识问答子系统用户') NOT NULL DEFAULT '知识问答子系统用户' COMMENT '用户角色（固定）',
-    permission_status ENUM('正常', '受限') NOT NULL DEFAULT '正常' COMMENT '权限状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='知识问答子系统用户表';
-
--- 掌上客户端用户表（专用于该角色用户）
-CREATE TABLE mobile_user (
-    user_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '用户ID(主键)',
-    username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
-    password VARCHAR(255) NOT NULL COMMENT '密码（需加密存储）',
-    email VARCHAR(100) NOT NULL UNIQUE COMMENT '邮箱',
-    register_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-    role ENUM('掌上客户端用户') NOT NULL DEFAULT '掌上客户端用户' COMMENT '用户角色（固定）',
-    permission_status ENUM('正常', '受限') NOT NULL DEFAULT '正常' COMMENT '权限状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='掌上客户端用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 -- 管理员表（专用于管理员角色）
 CREATE TABLE admin (
@@ -60,8 +37,18 @@ CREATE TABLE artifact (
     era VARCHAR(50) NOT NULL COMMENT '年代',
     type VARCHAR(50) NOT NULL COMMENT '文物类型（如瓷器、书画等）',
     description TEXT COMMENT '详细介绍',
-    image_url VARCHAR(255) COMMENT '图片存储路径'
+    image_url VARCHAR(255) COMMENT '图片存储路径',
+    likes INT DEFAULT 0 COMMENT '点赞数'，
+    vector_id BIGINT COMMENT 'Milvus 中的向量 ID（用于关联特征向量）'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文物表';
+
+-- 点赞表（记录当前用户是否点赞当前显示文物）
+CREATE TABLE likes (
+    like_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '点赞记录ID(主键)',
+    user_id INT NOT NULL COMMENT '用户ID',
+    artifact_id INT NOT NULL COMMENT '文物ID',
+    FOREIGN KEY (artifact_id) REFERENCES artifact(artifact_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表';
 
 -- 评论表（用户对文物的评论）
 CREATE TABLE comment (
@@ -81,24 +68,25 @@ CREATE TABLE collection (
     collect_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收藏表';
 
--- 动态表（用户发布的动态）
-CREATE TABLE post (
-    post_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '动态ID(主键)',
-    content TEXT NOT NULL COMMENT '动态内容',
-    publish_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
-    user_id INT NOT NULL COMMENT '用户ID',
-    review_status ENUM('通过', '未通过') NOT NULL DEFAULT '未通过' COMMENT '审核状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='动态表';
+-- 新增问答表和主题表
+-- 问答记录表
+CREATE TABLE QA (
+    qa_id INT PRIMARY KEY AUTO_INCREMENT,
+    history_id INT NOT NULL,
+    content TEXT NOT NULL,
+    ask_time DATETIME NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
 
--- 问答记录表（用户提问与回答记录）
-CREATE TABLE qa (
-    qa_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '问答ID(主键)',
-    question TEXT NOT NULL COMMENT '问题内容',
-    answer TEXT COMMENT '答案内容',
-    ask_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '提问时间',
-    user_id INT NOT NULL COMMENT '用户ID',
-    artifact_id INT COMMENT '关联文物ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='问答记录表';
+-- 主题记录表
+CREATE TABLE Topic (
+    user_id INT NOT NULL,
+    history_id INT NOT NULL,
+    topic VARCHAR(255),
+    PRIMARY KEY (user_id, history_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
 
 -- 审核记录表（审核员操作记录）
 CREATE TABLE review (
@@ -127,24 +115,3 @@ CREATE TABLE backup (
     file_path VARCHAR(255) NOT NULL COMMENT '备份文件路径',
     operator_id INT NOT NULL COMMENT '操作员ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='备份记录表';
-
-
--- 新增问答表和主题表
--- 问答记录表
-CREATE TABLE QA (
-    qa_id INT PRIMARY KEY AUTO_INCREMENT,
-    history_id INT NOT NULL,
-    content TEXT NOT NULL,
-    ask_time DATETIME NOT NULL,
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
-);
-
--- 主题记录表
-CREATE TABLE Topic (
-    user_id INT NOT NULL,
-    history_id INT NOT NULL,
-    topic VARCHAR(255),
-    PRIMARY KEY (user_id, history_id),
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
-);
