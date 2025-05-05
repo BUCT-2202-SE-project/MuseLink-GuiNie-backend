@@ -68,6 +68,14 @@ CREATE TABLE collection (
     collect_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收藏表';
 
+--浏览记录表
+CREATE TABLE user_browse_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,          -- 自增主键
+    user_id INT NOT NULL,                       -- 用户 ID
+    artifact_id INT NOT NULL,                   -- 文物 ID
+    browse_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 浏览时间，默认为当前时间
+);
+
 -- 新增问答表和主题表
 -- 问答记录表
 CREATE TABLE QA (
