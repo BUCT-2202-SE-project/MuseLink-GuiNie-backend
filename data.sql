@@ -91,7 +91,13 @@ CREATE TABLE Topic (
                        history_id INT NOT NULL,
                        topic VARCHAR(255)
 );
-
+浏览记录表
+CREATE TABLE user_browse_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,          -- 自增主键
+    user_id INT NOT NULL,                       -- 用户 ID
+    artifact_id INT NOT NULL,                   -- 文物 ID
+    browse_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 浏览时间，默认为当前时间
+);
 -- 审核记录表（审核员操作记录）
 CREATE TABLE review (
                         review_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '审核ID(主键)',
