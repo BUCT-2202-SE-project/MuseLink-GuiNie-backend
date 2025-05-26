@@ -123,5 +123,5 @@ CREATE TABLE backup (
                         backup_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '备份ID(主键)',
                         backup_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '备份时间',
                         file_path VARCHAR(255) NOT NULL COMMENT '备份文件路径',
-                        operator_id INT NOT NULL COMMENT '操作员ID'
+                        operator_id INT NOT NULL COMMENT '操作员IDq'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='备份记录表';
