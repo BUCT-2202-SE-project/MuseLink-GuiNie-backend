@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReceiveStockMapper">
+
+
+ <!--   <select id="selectAll" resultType="com.example.entity.ReceiveStock">
+        select receive_stock.*
+        <where>
+            <if test="receiveName != null"> and user.name like concat('%', #{receiveName}, '%')</if>
+        </where>
+    </select>-->
+ <!--   <select id="selectAll" resultType="com.example.entity.ReceiveStock">
+        SELECT *,qa.name FROM receive_stock,qa where receive_stock.goods_id=qa.id
+
+    </select>-->
+    <select id="selectAll" resultType="com.example.entity.ReceiveStock">
+        SELECT *,qa.name as goodsName  from receive_stock
+        left join qa on receive_stock.goods_id = qa.id
+        <where>
+            <if test="goodsName != null"> and qa.name like concat('%', #{goodsName}, '%')</if>
+
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.ReceiveStock" useGeneratedKeys="true">
+        insert into receive_stock(id, goods_id, num, channel, comment,delivery_time,single_price,receive_name)
+        values (#{id}, #{goodsId}, #{num}, #{channel},  #{comment},#{deliveryTime},#{singlePrice},#{receiveName})
+    </insert>
+
+
+    <update id="updateById" parameterType="com.example.entity.ReceiveStock">
+        update receive_stock set num = #{num}, channel = #{channel},
+        comment = #{comment},delivery_time=#{deliveryTime},single_price=#{singlePrice}
+        where id = #{id} 
+    </update>
+
+</mapper>

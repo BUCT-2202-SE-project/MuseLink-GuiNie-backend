@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.reviewMapper">
+
+    <select id="selectAll" resultType="com.example.entity.review">
+        SELECT * FROM review
+        <where>
+            <if test="reviewerId != null and reviewerId != ''">
+                AND reviewer_id LIKE CONCAT('%', #{reviewerId}, '%')
+            </if>
+        </where>
+        ORDER BY review_time DESC
+    </select>
+
+
+</mapper>

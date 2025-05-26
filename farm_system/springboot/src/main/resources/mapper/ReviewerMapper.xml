@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReviewerMapper">
+
+
+    <select id="selectAll" resultType="com.example.entity.Reviewer">
+        select * from reviewer
+        <where>
+            <if test="username != null"> and name like concat('%', #{username}, '%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Reviewer" useGeneratedKeys="true" keyProperty="userId">
+        insert into reviewer(username, password, email, permission_status)
+        values (#{username}, #{password}, #{email}, #{permissionStatus})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Admin">
+        update reviewer set
+                         username = #{username},
+                         password = #{password},
+                         email = #{email},
+                         permission_status = #{permissionStatus}
+        where user_id = #{userId}
+    </update>
+
+</mapper>

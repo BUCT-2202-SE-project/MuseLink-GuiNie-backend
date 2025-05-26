@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CommentMapper">
+    <select id="selectAll" resultType="com.example.entity.Comment">
+        SELECT * FROM comment
+    </select>
+
+    <select id="selectByCondition" resultType="com.example.entity.Comment">
+        SELECT * FROM comment WHERE
+        (#{userId} IS NULL OR user_id = #{userId}) AND
+        (#{artifactId} IS NULL OR artifact_id = #{artifactId})
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Comment">
+        SELECT * FROM comment WHERE comment_id = #{id}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO comment (content, publish_time, user_id, artifact_id, review_status)
+        VALUES (#{content}, #{publishTime}, #{userId}, #{artifactId}, #{reviewStatus})
+    </insert>
+
+    <update id="update">
+        UPDATE comment SET content = #{content}, review_status = #{reviewStatus}
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM comment WHERE comment_id = #{id}
+    </delete>
+    <!-- 获取指定时间之后的所有评论 -->
+    <select id="selectByPublishTime" resultType="com.example.entity.Comment">
+        SELECT * FROM comment
+        WHERE publish_time &gt;= #{expirationTime} AND review_status = '未通过'
+    </select>
+</mapper>

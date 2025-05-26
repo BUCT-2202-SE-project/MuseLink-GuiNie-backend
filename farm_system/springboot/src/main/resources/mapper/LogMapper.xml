@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.LogMapper">
+
+
+    <select id="selectAll" resultType="com.example.entity.Log">
+        select * from log
+        <where>
+            <!-- 根据 operatorId 查询 -->
+            <if test="operatorId != -1"> and operator_id = #{operatorId} </if>
+
+
+        </where>
+        order by log_id desc
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Log" useGeneratedKeys="true"
+            keyProperty="logId" keyColumn="log_id">
+        insert into log(operation_type, operation_detail, operation_time, operator_id)
+        values (#{operationType}, #{operationDetail}, #{operationTime}, #{operatorId})
+    </insert>
+
+</mapper>

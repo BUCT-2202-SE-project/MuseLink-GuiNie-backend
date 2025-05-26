@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.QaMapper">
+
+
+    <select id="selectAll" resultType="com.example.entity.Qa">
+        select * from qa
+        <where>
+            <if test="question != null and question != ''"> and question like concat('%', #{question}, '%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Qa" useGeneratedKeys="true">
+        insert into qa(question, answer, ask_time, user_id, artifact_id)
+        values (#{question}, #{answer}, #{askTime}, #{userId}, #{artifactId})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Qa">
+        update qa set question = #{question}, answer = #{answer}, ask_time = #{askTime},
+                         user_id = #{userId}, artifact_id = #{artifactId}
+        where qa_id = #{qaId}
+    </update>
+
+</mapper>

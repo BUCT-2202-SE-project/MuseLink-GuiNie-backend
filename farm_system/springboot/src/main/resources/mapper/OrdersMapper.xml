@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OrdersMapper">
+
+    <select id="selectAll" resultType="com.example.entity.Orders">
+        select orders.*, qa.name as goodsName, qa.img as goodsImg, user.name as userName from orders
+        left join qa on orders.goods_id = qa.id
+        left join user on orders.user_id = user.id
+        <where>
+            <if test="orderNo != null"> and orders.order_no like concat('%', #{orderNo}, '%')</if>
+            <if test="userId != null"> and orders.user_id = #{userId}</if>
+        </where>
+        order by orders.id desc
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Orders" useGeneratedKeys="true">
+        insert into orders( goods_id,order_no, num, user_id,price,member_Id,discount,time)
+        values ( #{goodsId},#{orderNo} ,#{num}, #{userId},#{price},#{memberId},#{discount}, #{time})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Orders">
+        update orders set goods_id = #{goodsId}, num = #{num},
+        user_id = #{userId}, time = #{time}
+        where id = #{id} 
+    </update>
+
+</mapper>

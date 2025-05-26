@@ -1,0 +1,8 @@
+必须在本地mysql中修改一个my.ini文件，并配置以下内容：
+
+[mysqld]
+expire_logs_days = 7 // binlog日志保留天数
+log-bin="D:/MySQL/MySQL Server 8.0/Data/log\manage-bin" // binlog日志存放路径
+binlog-do-db=manage //需要备份的数据库
+sync_binlog=0//是否同步binlog日志到磁盘
+max_binlog_size=104857600//binlog日志文件大小

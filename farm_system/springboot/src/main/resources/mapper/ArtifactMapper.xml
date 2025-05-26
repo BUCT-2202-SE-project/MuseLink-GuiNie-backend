@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ArtifactMapper">
+
+
+    <select id="selectAll" resultType="com.example.entity.Artifact">
+        select * from artifact
+        <where>
+            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.example.entity.Artifact" useGeneratedKeys="true"
+            keyProperty="artifactId" keyColumn="artifact_id">
+        insert into artifact(name, era, type, museum, description, image_url, likes, feature)
+        values (#{name}, #{era}, #{type}, #{museum}, #{description}, #{imageUrl}, #{likes}, #{feature})
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Artifact">
+        update artifact set name = #{name}, era = #{era},
+                            type = #{type}, museum = #{museum},
+                            description = #{description},
+                            image_url = #{imageUrl},
+                            likes = #{likes},
+                            feature = #{feature}
+        where artifact_id = #{artifactId}
+    </update>
+
+</mapper>
